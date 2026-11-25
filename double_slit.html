@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Double Slit: Collapse, GRW, Bohm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=IBM+Plex+Serif:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a lecture demonstration — clear, exact, unhurried; built for a projector.
+   IDEA: an optical bench seen from above, run three times side by side: same apparatus, three theories.
+   PICTURE: three live simulations — ψ as violet light through the slits, detections piling up into fringes.
+   COLOUR and TYPE: white ground, ink, violet for ψ, vermilion for the Bohmian particle; Plex Sans + Plex Serif.
+   LAYOUT: title, controls, three benches, then the side-by-side ledger of what each theory says. */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#13121a);--panel:light-dark(#f4f3f8,#1c1b25);--ink:light-dark(#17161d,#ecebf3);--mute:light-dark(#5d5a6b,#a4a1b5);--line:light-dark(#dcdae5,#34323f);--psi:light-dark(#4b3fd1,#9d94ff);--bohm:light-dark(#e0401f,#ff7a57);--grw:light-dark(#0f7a6c,#4fd1bd);--hit:light-dark(#17161d,#f2f1fa);--barrier:light-dark(#2a2833,#56536a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(22px,3.5vw,48px) max(3vw,16px);max-width:1500px;margin:0 auto}
+h1{font:600 clamp(30px,4vw,46px)/1.05 "IBM Plex Serif",Georgia,serif;margin:0 0 10px;text-wrap:balance}
+.lede{color:var(--mute);max-width:75ch;margin:0}
+.controls{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;margin-top:18px}
+.grp{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.controls{column-gap:28px}
+.gl{font-size:13px;color:var(--mute);font-weight:500}
+button{font:500 15px "IBM Plex Sans",sans-serif;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+button.primary{background:var(--psi);border-color:var(--psi);color:light-dark(#fff,#13121a)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--bohm);outline-offset:2px}
+label.tog{display:flex;align-items:center;gap:7px;min-height:44px;font-size:15px;cursor:pointer}
+label.tog input{width:19px;height:19px;accent-color:var(--psi);margin:0}
+.slider{display:flex;align-items:center;gap:8px;font-size:15px}
+.slider input{width:120px;accent-color:var(--psi)}
+.benches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+.bench{background:var(--panel);border-radius:12px;padding:14px;display:flex;flex-direction:column}
+.bench h2{font:600 21px/1.15 "IBM Plex Serif",serif;margin:0}
+.tags{font-size:13px;color:var(--mute);margin:2px 0 2px}
+label.mon{min-height:40px;margin-bottom:4px;font-weight:500}
+.fig{position:relative;aspect-ratio:4/3;border-radius:8px;overflow:hidden;background:var(--bg)}
+.fig canvas{position:absolute;inset:0;width:100%;height:100%}
+.say{min-height:7.8em;margin:12px 0 0;font-size:15px;flex:1}
+.say b{color:var(--psi)}
+#gG .say b{color:var(--grw)}
+.count{font-size:13px;color:var(--mute);margin-top:6px}
+.match{margin:14px 0 0;padding:10px 14px;border-left:3px solid var(--psi);background:var(--panel);border-radius:6px;display:none}
+table{border-collapse:collapse;width:100%;margin-top:8px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+thead th{font:600 17px "IBM Plex Serif",serif}
+tbody th{font-weight:500;color:var(--mute);width:16%}
+h3{font:600 24px "IBM Plex Serif",serif;margin:0}
+.note{font-size:13.5px;color:var(--mute);max-width:95ch;margin-top:18px}
+em.k{font-style:normal;font-weight:700}
+@media(max-width:1150px){.benches{grid-template-columns:minmax(0,1fr)}.fig{aspect-ratio:16/10}.say{min-height:0}}
+@media(max-width:600px){table{font-size:13.5px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack th,.stack td{display:flow-root;border:0;padding:3px 0;width:auto}.stack td{padding-inline-start:5.5em}.stack td::before{content:attr(data-l);float:inline-start;width:5em;margin-inline-start:-5.5em;font-weight:600}}
+</style>
+</head>
+<body>
+<div class="band">
+  <h1>Same fringes, three stories</h1>
+  <p class="lede">The double slit run on three benches: standard quantum mechanics with the collapse postulate, GRW spontaneous collapse, and Bohmian mechanics. Fire particles one at a time and watch what each theory says happens between source and screen. Then fire a hundred and compare the screens. Switch on <em>Monitor the slits</em> on any bench to put which-way detectors at the slits.</p>
+  <div class="controls">
+    <div class="grp">
+      <button class="primary" id="fire1">Fire one</button>
+      <button id="fire100">Fire 100</button>
+      <button id="reset">Clear screens</button>
+    </div>
+    <div class="grp">
+      <div class="slider"><label for="dsl">Slit separation</label><input id="dsl" type="range" min="2" max="4.8" step="0.2" value="3.2"></div>
+      <label class="tog"><input type="checkbox" id="lower" checked> Lower slit open</label>
+      <label class="tog"><input type="checkbox" id="born"> |ψ|² curve</label>
+    </div>
+    <div class="grp">
+      <span class="gl">GRW</span>
+      <label class="tog"><input type="radio" name="ont" id="grwm" checked> GRWm</label>
+      <label class="tog"><input type="radio" name="ont" id="grwf"> GRWf</label>
+      <label class="tog"><input type="checkbox" id="exag"> Crank up hit rate</label>
+    </div>
+    <div class="grp">
+      <span class="gl">Bohm</span>
+      <label class="tog"><input type="checkbox" id="hidden" checked> Show particle</label>
+      <label class="tog"><input type="checkbox" id="ens"> Trajectory ensemble</label>
+    </div>
+  </div>
+  <div class="benches">
+    <section class="bench" id="gC">
+      <h2>Standard QM with collapse</h2>
+      <div class="tags">indeterministic · indeterminate · measurement primitive</div>
+      <label class="tog mon"><input type="checkbox" id="monC"> Monitor the slits</label>
+      <div class="fig"><canvas id="cC"></canvas></div>
+      <p class="say" id="sayC"></p>
+      <div class="count" id="nC"></div>
+    </section>
+    <section class="bench" id="gG">
+      <h2>GRW spontaneous collapse</h2>
+      <div class="tags">indeterministic · indeterminate · no measurement primitive</div>
+      <label class="tog mon"><input type="checkbox" id="monG"> Monitor the slits</label>
+      <div class="fig"><canvas id="cG"></canvas></div>
+      <p class="say" id="sayG"></p>
+      <div class="count" id="nG"></div>
+    </section>
+    <section class="bench" id="gB">
+      <h2>Bohmian mechanics</h2>
+      <div class="tags">deterministic · determinate · no collapse</div>
+      <label class="tog mon"><input type="checkbox" id="monB"> Monitor the slits</label>
+      <div class="fig"><canvas id="cB"></canvas></div>
+      <p class="say" id="sayB"></p>
+      <div class="count" id="nB"></div>
+    </section>
+  </div>
+  <p class="match" id="match"></p>
+</div>
+
+<div class="band">
+  <h3>What each theory says about one particle</h3>
+  <table class="stack">
+    <thead><tr><th></th><th>Collapse</th><th>GRW</th><th>Bohm</th></tr></thead>
+    <tbody>
+      <tr><th>Ontology</th><td>The quantum state ψ, which is complete</td><td>ψ plus a primitive ontology: a matter density (GRWm) or flashes (GRWf)</td><td>Particles with positions, plus a real quantum state ψ</td></tr>
+      <tr><th>Position before detection</th><td><em class="k">Metaphysically</em> indeterminate: ψ is the whole story and assigns no position, so there is no fact to be ignorant of</td><td><em class="k">Metaphysically</em> indeterminate. On GRWm the matter is literally spread out; on GRWf there is no matter in flight at all</td><td>Determinate at all times. Our uncertainty about it is <em class="k">epistemic</em>: we only know it is distributed as |ψ|²</td></tr>
+      <tr><th>Which slit?</th><td>No fact of the matter</td><td>No fact of the matter, unless a hit strikes in flight (and then the interference is lost)</td><td>Exactly one, though we don't know which</td></tr>
+      <tr><th>Dynamics</th><td>Schrödinger evolution, interrupted by collapse at measurement</td><td>One law, always: Schrödinger evolution interrupted by random hits, at rate λ per particle, of width r<sub>C</sub></td><td>Schrödinger evolution for ψ, guidance equation for the particles, always</td></tr>
+      <tr><th>What fixes the outcome</th><td>Irreducible chance at the moment of measurement</td><td>Irreducible chance: when and where the hits fall</td><td>The initial configuration together with ψ: deterministic</td></tr>
+      <tr><th>Born-rule probabilities</th><td>Objective chances, postulated</td><td>Objective chances generated by the stochastic dynamics, with new constants λ and r<sub>C</sub></td><td>Epistemic: ignorance of the initial configuration; equivariance keeps the distribution equal to |ψ|²</td></tr>
+      <tr><th>Measurement</th><td>A primitive of the theory</td><td>Not primitive: a detector has ~10²³ particles, so one of them is hit almost at once</td><td>Not primitive: just more particles moving</td></tr>
+      <tr><th>If the slits are monitored</th><td>The slit measurement collapses ψ onto one slit. Now there is a fact about which slit, and the fringes vanish</td><td>ψ entangles with the slit detector, one of whose ~10²³ particles is hit almost at once, localising ψ onto one slit. Same result, but produced by the dynamics</td><td>No collapse. ψ entangles with the detector; the particle is guided only by the branch it is in (its effective wavefunction), so the fringes vanish. The detector reveals which slit the particle was always going through</td></tr>
+      <tr><th>Empirically</th><td>The standard predictions</td><td>Deviates slightly from standard QM; λ must be small enough to keep interference for microscopic systems</td><td>The standard predictions, in quantum equilibrium</td></tr>
+    </tbody>
+  </table>
+  <p class="note">The model: each slit emits a Gaussian packet (width σ₀ = 0.15), evolved by the free Schrödinger equation in the transverse direction only, with ħ = m = 1. The horizontal axis is time, which stands in for distance travelled at constant forward speed. Collapse outcomes are drawn from |ψ|² at the screen. Bohmian velocities come from the guidance equation v = (ħ/m) Im(∂ₓψ / ψ), integrated with RK4; initial positions are drawn from |ψ|² (quantum equilibrium). GRW: with the realistic λ ≈ 10⁻¹⁶ s⁻¹ no hit occurs in flight, so ψ evolves exactly as in the left panel until the detector localises it. With the slits monitored, standard QM and GRW localise ψ onto one slit (chosen with probability ½); in Bohmian mechanics ψ is not changed, but the particle is guided by the branch for the slit it actually went through, which is what an entangled detector with non-overlapping pointer states amounts to. With “Crank up hit rate”, a hit is due on average every 0.6 of the flight time. It multiplies ψ by a Gaussian of width r<sub>C</sub> = 0.35 (display units), centred at a point drawn with |ψ|² weight. The result is evolved exactly by FFT. None of the three screens is copied from another. In the Bohmian ensemble view, notice that no trajectory crosses the midline: with both slits open, which slit a particle went through is fixed by which side of the screen it lands on.</p>
+</div>
+
+<script>
+{
+const S0=0.15,T=0.9,XM=9,NSTEP=1600,NB=72,RC=0.35,NG=2048,LG=48,DX=LG/NG,TAUH=0.6*T,NC=300,NR=240;
+let A=1.6,TWO=true;
+const $=id=>document.getElementById(id);
+const SIDES=['C','G','B'];
+const cv={C:$('cC'),G:$('cG'),B:$('cB')};
+const mon={C:$('monC'),G:$('monG'),B:$('monB')};
+const ens=$('ens'),hid=$('hidden'),bornBox=$('born'),exag=$('exag'),grwf=$('grwf');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SL=()=>TWO?[A,-A]:[A];
+const slitsFor=s=>s==null?SL():[s];
+const pickSlit=()=>TWO?(Math.random()<0.5?A:-A):A;
+const slitName=s=>s>0?'upper':'lower';
+
+// ψ and ∂ψ at (x,t) for packets from slits sl; common factor 1/sqrt(1+iτ) dropped (cancels in v and after normalisation)
+function psi(x,t,sl){
+  const tau=t/(2*S0*S0),den=1+tau*tau;let pr=0,pi=0,dr=0,di=0;
+  for(const b of sl){
+    const u=(x-b)*(x-b)/(4*S0*S0),m=Math.exp(-u/den),ph=u*tau/den;
+    const gr=m*Math.cos(ph),gi=m*Math.sin(ph),k=-(x-b)/(2*S0*S0*den);
+    pr+=gr;pi+=gi;dr+=k*(gr+tau*gi);di+=k*(gi-tau*gr);
+  }
+  return [pr,pi,dr,di];
+}
+const dens=(x,t,sl)=>{const p=psi(x,t,sl);return p[0]*p[0]+p[1]*p[1]};
+function vel(x,t,sl){const [pr,pi,dr,di]=psi(x,t,sl),n=pr*pr+pi*pi;return n<1e-300?0:(pr*di-pi*dr)/n}
+function traj(x0,sl){
+  const out=new Float64Array(NSTEP+1),dt=T/NSTEP;let x=x0,t=0;out[0]=x;
+  for(let i=1;i<=NSTEP;i++){
+    const k1=vel(x,t,sl),k2=vel(x+dt/2*k1,t+dt/2,sl),k3=vel(x+dt/2*k2,t+dt/2,sl),k4=vel(x+dt*k3,t+dt,sl);
+    x+=dt/6*(k1+2*k2+2*k3+k4);t+=dt;out[i]=x;
+  }
+  return out;
+}
+const gauss=()=>{let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+const sampleX0=()=>pickSlit()+S0*gauss();
+function erf(x){const s=Math.sign(x);x=Math.abs(x);const t=1/(1+0.3275911*x);return s*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x))}
+// Bohm: which slit the particle actually went through, and the ψ that guides it
+function bohmShot(x0,monitored){const s=monitored?(TWO?(x0>0?A:-A):A):null;return {s,tr:traj(x0,slitsFor(s))}}
+
+// ---- FFT grid for GRW hits ----
+const gx=new Float64Array(NG),k2=new Float64Array(NG);
+for(let j=0;j<NG;j++){gx[j]=-LG/2+j*DX;const m=j<NG/2?j:j-NG,k=2*Math.PI*m/LG;k2[j]=k*k}
+function fft(re,im,inv){
+  const n=re.length;
+  for(let i=1,j=0;i<n;i++){let b=n>>1;for(;j&b;b>>=1)j^=b;j^=b;if(i<j){[re[i],re[j]]=[re[j],re[i]];[im[i],im[j]]=[im[j],im[i]]}}
+  for(let len=2;len<=n;len<<=1){const a=(inv?2:-2)*Math.PI/len,wr=Math.cos(a),wi=Math.sin(a);
+    for(let i=0;i<n;i+=len){let cr=1,ci=0;for(let j=0;j<len/2;j++){const p=i+j,q=p+len/2,tr=re[q]*cr-im[q]*ci,ti=re[q]*ci+im[q]*cr;re[q]=re[p]-tr;im[q]=im[p]-ti;re[p]+=tr;im[p]+=ti;const nr=cr*wr-ci*wi;ci=cr*wi+ci*wr;cr=nr}}}
+}
+function sampleArr(xs,d){let s=0;for(const v of d)s+=v;let r=Math.random()*s;for(let i=0;i<d.length;i++){r-=d[i];if(r<=0)return xs[i]}return xs[xs.length-1]}
+// a GRW hit at time th: multiply ψ by a Gaussian of width RC centred at c (drawn with |ψ|² weight, smeared by RC)
+function grwHit(th,sl){
+  const re=new Float64Array(NG),im=new Float64Array(NG),d=new Float64Array(NG);
+  for(let j=0;j<NG;j++){const p=psi(gx[j],th,sl);re[j]=p[0];im[j]=p[1];d[j]=p[0]*p[0]+p[1]*p[1]}
+  const c=sampleArr(gx,d)+RC*gauss();
+  for(let j=0;j<NG;j++){const g=Math.exp(-((gx[j]-c)**2)/(2*RC*RC));re[j]*=g;im[j]*=g}
+  fft(re,im,false);return {th,c,re,im};
+}
+function evolveDens(h,t){
+  const re=new Float64Array(NG),im=new Float64Array(NG),d=new Float64Array(NG),dt=t-h.th;
+  for(let j=0;j<NG;j++){const a=-k2[j]*dt/2,c=Math.cos(a),s=Math.sin(a);re[j]=h.re[j]*c-h.im[j]*s;im[j]=h.re[j]*s+h.im[j]*c}
+  fft(re,im,true);for(let j=0;j<NG;j++)d[j]=re[j]*re[j]+im[j]*im[j];return d;
+}
+// GRW run: if the slits are monitored, the slit detector is hit almost at once, localising ψ onto one slit
+function grwShot(withImg){
+  const s=mon.G.checked?pickSlit():null,sl=slitsFor(s);
+  if(!exag.checked)return {s,hit:null,x:sampleScreen(sl)};
+  const th=-Math.log(1-Math.random())*TAUH;
+  if(th>=T)return {s,hit:null,x:sampleScreen(sl)};
+  const h=grwHit(th,sl);
+  return {s,hit:h,x:sampleArr(gx,evolveDens(h,T)),img:withImg?makeImg(sl,h):null};
+}
+
+// ---- sampling from |ψ(T)|² ----
+let samplers={},bornBoth,bornMix;
+function makeSampler(sl){
+  const n=2400,grid=new Float64Array(n),cdf=new Float64Array(n);let s=0;
+  for(let i=0;i<n;i++){grid[i]=-XM+2*XM*i/(n-1);s+=dens(grid[i],T,sl);cdf[i]=s}
+  for(let i=0;i<n;i++)cdf[i]/=s;
+  const bp=new Float64Array(NB);
+  for(let i=0;i<n;i++){const b=Math.min(NB-1,Math.floor((grid[i]+XM)/(2*XM)*NB));bp[b]+=i?cdf[i]-cdf[i-1]:cdf[0]}
+  return {grid,cdf,bp};
+}
+const key=sl=>sl.join(',');
+function sampleScreen(sl){const S=samplers[key(sl)],r=Math.random();let lo=0,hi=S.cdf.length-1;while(lo<hi){const m=(lo+hi)>>1;if(S.cdf[m]<r)lo=m+1;else hi=m}return S.grid[lo]}
+
+// ---- ψ images: |ψ|² per column, normalised per column ----
+const probe=document.createElement('i');probe.style.display='none';document.body.appendChild(probe);
+function css(n){probe.style.color='var('+n+')';return getComputedStyle(probe).color}
+let imgs={};
+function makeImg(sl,h){
+  const c=document.createElement('canvas');c.width=NC;c.height=NR;
+  const ctx=c.getContext('2d'),img=ctx.createImageData(NC,NR),rgb=css('--psi').match(/[\d.]+/g).map(Number),v=new Float64Array(NR);
+  for(let j=0;j<NC;j++){
+    const t=T*j/(NC-1);
+    if(h&&t>=h.th){const d=evolveDens(h,t);for(let i=0;i<NR;i++){const x=XM-2*XM*i/(NR-1);v[i]=d[Math.round((x+LG/2)/DX)]}}
+    else for(let i=0;i<NR;i++)v[i]=dens(XM-2*XM*i/(NR-1),t,sl);
+    let mx=0;for(const a of v)if(a>mx)mx=a;
+    for(let i=0;i<NR;i++){const k=4*(i*NC+j);img.data[k]=rgb[0];img.data[k+1]=rgb[1];img.data[k+2]=rgb[2];img.data[k+3]=Math.round(235*Math.pow(v[i]/mx,0.75))}
+  }
+  ctx.putImageData(img,0,0);return c;
+}
+const imgFor=s=>imgs[s==null?'both':s>0?'up':'down'];
+function buildImgs(){imgs={both:makeImg(SL(),null),up:makeImg([A],null),down:makeImg([-A],null)}}
+let ensemble=[];
+function buildEnsemble(){
+  ensemble=[];const per=23;
+  for(const b of SL())for(let k=0;k<per;k++){
+    const q=(k+0.5)/per;let lo=-6,hi=6;
+    for(let it=0;it<50;it++){const m=(lo+hi)/2;if(0.5*(1+erf(m/Math.SQRT2))<q)lo=m;else hi=m}
+    ensemble.push(bohmShot(b+S0*lo,mon.B.checked).tr);
+  }
+}
+function rebuild(){
+  samplers={};for(const sl of [SL(),[A],[-A]])samplers[key(sl)]=makeSampler(sl);
+  bornBoth=samplers[key(SL())].bp;
+  bornMix=TWO?samplers[key([A])].bp.map((v,i)=>(v+samplers[key([-A])].bp[i])/2):samplers[key([A])].bp;
+  buildImgs();buildEnsemble();
+}
+
+const hits={C:[],G:[],B:[]};
+let shot=null;
+const DUR={a:reduce?50:800,p:reduce?50:2600,d:reduce?50:1300};
+
+function geom(c){
+  const r=c.getBoundingClientRect(),dpr=devicePixelRatio||1;
+  if(c.width!==Math.round(r.width*dpr)||c.height!==Math.round(r.height*dpr)){c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr)}
+  const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  const W=r.width,H=r.height,pad=10,xb=W*0.13,xs=W*0.79;
+  return {ctx,W,H,xb,xs,Y:x=>H/2-x/XM*(H/2-pad),X:t=>xb+(xs-xb)*t/T};
+}
+function phase(now){
+  if(!shot)return {ph:0,p:0,t:0};const el=now-shot.t0;
+  if(el<DUR.a)return {ph:1,p:el/DUR.a,t:0};
+  if(el<DUR.a+DUR.p){const p=(el-DUR.a)/DUR.p;return {ph:2,p,t:p*T}}
+  return {ph:3,p:Math.min(1,(el-DUR.a-DUR.p)/DUR.d),t:T};
+}
+function burst(ctx,x,y,r,col){ctx.strokeStyle=col;ctx.lineWidth=2;ctx.beginPath();for(let k=0;k<8;k++){const a=k*Math.PI/4,r0=k%2?r*0.35:r*0.3,r1=k%2?r*0.7:r;ctx.moveTo(x+r0*Math.cos(a),y+r0*Math.sin(a));ctx.lineTo(x+r1*Math.cos(a),y+r1*Math.sin(a))}ctx.stroke();ctx.fillStyle=col;ctx.beginPath();ctx.arc(x,y,3.5,0,7);ctx.fill()}
+function draw(side,now){
+  const {ctx,W,H,xb,xs,Y,X}=geom(cv[side]);ctx.clearRect(0,0,W,H);
+  const psiC=css('--psi'),bohm=css('--bohm'),grw=css('--grw'),hitC=css('--hit'),line=css('--line'),bar=css('--barrier'),mute=css('--mute');
+  const col={C:psiC,G:grw,B:bohm}[side];
+  const {ph,p,t}=phase(now),sh=shot&&shot[side],g=side==='G'&&sh,hitNow=g&&g.hit&&ph>=2&&t>=g.hit.th;
+  const fOnt=side==='G'&&grwf.checked,M=mon[side].checked,s=sh?sh.s:null;
+  // incoming plane wave
+  if(ph===1){ctx.strokeStyle=psiC;ctx.lineWidth=2;for(let k=0;k<4;k++){const x=((p*xb)+k*xb/4)%xb;ctx.globalAlpha=(fOnt?0.25:0.5)*(x/xb);ctx.beginPath();ctx.moveTo(x,8);ctx.lineTo(x,H-8);ctx.stroke()}ctx.globalAlpha=1}
+  // ψ beyond the slits
+  let waveA=0,reach=0;
+  if(ph===2){waveA=1;reach=p}else if(ph===3){reach=1;waveA=side==='B'?Math.max(0.28,1-p*1.4):Math.max(0,1-p*2.2)}
+  if(!shot&&ens.checked&&side==='B'){waveA=0.35;reach=1}
+  if(fOnt)waveA*=0.22;
+  const src=g&&g.img?g.img:imgFor(s);
+  const clip=a=>{ctx.save();ctx.beginPath();ctx.rect(xb,0,(xs-xb)*reach,H);ctx.clip();ctx.globalAlpha=a};
+  if(waveA>0){clip(waveA);ctx.drawImage(src,xb,Y(XM),xs-xb,Y(-XM)-Y(XM));ctx.restore();ctx.globalAlpha=1}
+  // Bohm with monitoring: the empty branch still exists, but no longer guides the particle
+  if(side==='B'&&s!=null&&TWO&&waveA>0){clip(0.16);ctx.drawImage(imgFor(-s),xb,Y(XM),xs-xb,Y(-XM)-Y(XM));ctx.restore();ctx.globalAlpha=1;
+    if(ph>=2&&p>0.35||ph===3){ctx.fillStyle=mute;ctx.font='italic 13px IBM Plex Sans,sans-serif';ctx.fillText('empty branch',X(0.3*T),Y(-s*1.9)+(s>0?12:-4))}}
+  // Bohmian ensemble
+  if(side==='B'&&ens.checked){ctx.strokeStyle=bohm;ctx.lineWidth=0.9;ctx.globalAlpha=0.42;for(const tr of ensemble){ctx.beginPath();for(let i=0;i<=NSTEP;i+=8){const px=X(T*i/NSTEP),py=Y(tr[i]);i?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.stroke()}ctx.globalAlpha=1}
+  // barrier with slits
+  const sw=Math.max(5,(Y(-2*S0)-Y(2*S0))/2);ctx.fillStyle=bar;
+  const ys=SL().map(Y).sort((a,b)=>a-b);let y0=0;
+  for(const y of ys){ctx.fillRect(xb-3,y0,6,Math.max(0,y-sw-y0));y0=y+sw}ctx.fillRect(xb-3,y0,6,H-y0);
+  // which-way detectors at the slits
+  if(M&&TWO){
+    for(const b of SL()){const y=b>0?Y(b)-sw-14:Y(b)+sw+2,clicked=s===b&&ph>=2;
+      ctx.fillStyle=clicked?col:css('--panel');ctx.strokeStyle=clicked?col:bar;ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(xb+4,y,20,12,3);ctx.fill();ctx.stroke();
+      if(clicked){ctx.fillStyle=col;ctx.font='600 13px IBM Plex Sans,sans-serif';ctx.fillText('click',xb+4,b>0?y-5:y+26);
+        if(side==='G'&&grwf.checked&&ph===2&&p<0.25)burst(ctx,xb+14,y+6,16*(1-p*2),grw)}}
+    if(!shot||ph<2){ctx.fillStyle=mute;ctx.font='12px IBM Plex Sans,sans-serif';ctx.fillText('detectors',xb+6,Y(SL()[0])-sw-20)}
+  }
+  // screen + histogram
+  ctx.fillStyle=line;ctx.fillRect(xs,0,4,H);
+  const hs=hits[side],bins=new Array(NB).fill(0);for(const h of hs){const b=Math.min(NB-1,Math.max(0,Math.floor((h.x+XM)/(2*XM)*NB)));bins[b]++}
+  const mx=Math.max(4,...bins),bh=(H-20)/NB,hw=W-xs-14;
+  ctx.fillStyle=col;ctx.globalAlpha=0.8;
+  bins.forEach((c,i)=>{if(c){const y=Y(-XM+2*XM*(i+1)/NB);ctx.fillRect(xs+10,y,hw*c/mx,Math.max(1,bh-1))}});ctx.globalAlpha=1;
+  if(bornBox.checked&&hs.length){const bp=M?bornMix:bornBoth;ctx.strokeStyle=hitC;ctx.lineWidth=1.5;ctx.beginPath();
+    for(let i=0;i<NB;i++){const px=xs+10+hw*Math.min(1.15,bp[i]*hs.length/mx),py=Y(-XM+2*XM*(i+0.5)/NB);i?ctx.lineTo(px,py):ctx.moveTo(px,py)}ctx.stroke()}
+  ctx.fillStyle=hitC;ctx.globalAlpha=0.6;for(const h of hs)ctx.fillRect(xs-6+h.j*4,Y(h.x)-1,2,2);ctx.globalAlpha=1;
+  if(shot){
+    if(side==='B'&&(hid.checked||ph===3)){
+      const tr=sh.tr;let px,py;
+      if(ph===1){px=xb*p;py=Y(tr[0])}else{const i=ph===2?Math.floor(p*NSTEP):NSTEP;px=X(T*i/NSTEP);py=Y(tr[i])}
+      if(hid.checked){ctx.strokeStyle=bohm;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,Y(tr[0]));ctx.lineTo(Math.min(px,xb),Y(tr[0]));
+        if(ph>=2){const lim=ph===2?Math.floor(p*NSTEP):NSTEP;for(let i=0;i<=lim;i+=4)ctx.lineTo(X(T*i/NSTEP),Y(tr[i]))}ctx.stroke()}
+      ctx.fillStyle=bohm;ctx.beginPath();ctx.arc(px,py,ph===3?6:5,0,7);ctx.fill();
+    }
+    if(hitNow){const hx=X(g.hit.th),hy=Y(g.hit.c);
+      if(grwf.checked)burst(ctx,hx,hy,14,grw);else{ctx.strokeStyle=grw;ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(hx,36);ctx.lineTo(hx,H-24);ctx.stroke();ctx.setLineDash([])}
+      ctx.fillStyle=grw;ctx.font='600 13px IBM Plex Sans,sans-serif';ctx.fillText(grwf.checked?'flash':'hit',hx+10,Math.max(16,hy-12))}
+    if((side==='C'||side==='G')&&ph===3){const y=Y(sh.x);
+      if(side==='G'&&grwf.checked)burst(ctx,xs,y,10+12*(1-p),grw);
+      else{const r=6+14*(1-p);ctx.strokeStyle=col;ctx.globalAlpha=1-p*0.7;ctx.lineWidth=2;ctx.beginPath();ctx.arc(xs,y,r,0,7);ctx.stroke();ctx.globalAlpha=1;ctx.fillStyle=hitC;ctx.beginPath();ctx.arc(xs,y,5,0,7);ctx.fill()}}
+    if(ph===1||ph===2){ctx.fillStyle=mute;ctx.font='600 14px IBM Plex Sans,sans-serif';
+      const lab=side==='C'?(s!=null&&ph===2?'ψ collapsed onto the '+slitName(s)+' slit':'ψ only: no particle position'):side==='G'?(grwf.checked?'no flashes yet: no matter in flight':'matter density m ∝ |ψ|²'):'';
+      if(lab)ctx.fillText(lab,xb+12,24)}
+  }
+  ctx.fillStyle=mute;ctx.font='12px IBM Plex Sans,sans-serif';ctx.fillText('source',6,H-8);ctx.fillText('screen',xs-46,H-8);
+  return {ph,hit:!!hitNow};
+}
+function cText(ph,s){
+  if(ph===0)return mon.C.checked?'Press <b>Fire one</b>. Which-way detectors now sit just behind the slits.':'Press <b>Fire one</b>. A single quantum system enters the apparatus.';
+  if(ph===1)return 'ψ propagates toward the barrier. On this view ψ is the <b>complete</b> state, and it assigns no position: there is no fact about where the particle is.';
+  if(ph===2&&s!=null)return 'The slit detectors <b>measure</b> which slit. ψ collapses, by chance, onto the slit that clicked ('+slitName(s)+'). Now there <b>is</b> a fact about which slit, created by the measurement. Only one slit’s wave travels on, so nothing interferes.';
+  if(ph===2)return 'ψ passes through both slits and interferes with itself. There is <b>no fact</b> about which slit the particle went through. That is not ignorance on our part; ψ simply does not settle it (metaphysical indeterminacy).';
+  return s!=null?'The screen measures position, and ψ collapses a second time. Over many runs you get two overlapping single-slit patterns: <b>no fringes</b>.':'The screen <b>measures</b> position. ψ collapses, by irreducible chance, to a state localised at the spot shown. Nothing before the measurement fixed this outcome.';
+}
+function gText(ph,hit,s){
+  const f=grwf.checked,x=exag.checked;
+  if(ph===0)return mon.G.checked?'Press <b>Fire one</b>. Which-way detectors, each made of ~10²³ particles, now sit just behind the slits.':'Press <b>Fire one</b>. The same ψ enters the apparatus, governed by a single stochastic law.';
+  if(ph===1)return x?'The hit rate is <b>cranked up</b> far beyond GRW’s value, so a spontaneous hit may now strike in flight.':'ψ obeys the Schrödinger equation, apart from rare spontaneous <b>hits</b>. For one particle the rate is λ ≈ 10⁻¹⁶ s⁻¹, about one hit every few hundred million years. In practice none happens in flight.';
+  if(ph===2&&hit)return 'A <b>hit</b>: ψ is multiplied by a narrow Gaussian at a random centre, weighted by |ψ|². ψ now comes from essentially one place and can no longer interfere with itself. Fire 100 and the fringes wash out. That is why λ must be tiny.'+(f?' The hit is a <b>flash</b>, the first bit of matter in the whole run.':' The matter density contracts with it.');
+  if(ph===2&&s!=null)return 'Passing the slits, ψ becomes entangled with the detector. One of its ~10²³ particles is <b>hit</b> almost at once, localising the detector, and with it ψ, onto one slit ('+slitName(s)+'). Same result as the measurement postulate, but produced by the ordinary GRW dynamics.'+(f?' That hit is a <b>flash</b> in the detector.':' The matter density now passes through one slit only.');
+  if(ph===2)return 'ψ goes through both slits and interferes. There is <b>no fact</b> about which slit (indeterminate): not because nobody is looking, but because no hit has localised ψ.'+(f?' On <b>GRWf</b> there is no matter in flight at all, just ψ fixing the chances of the next flash.':' On <b>GRWm</b> the matter itself is smeared through both slits.');
+  return (s!=null?'Another detector-triggered hit at the screen. Each run’s ψ came from one slit, so over many runs there are <b>no fringes</b>.':'At the screen ψ becomes entangled with the ~10²³ particles of the detector. One of them is hit within a fraction of a microsecond, localising the whole state: that is the outcome. It is chancy, and <b>no measurement postulate</b> is needed.')+(f?' The hit is a flash in the detector: that is the dot.':' The matter density, detector included, ends up in one place.');
+}
+function bText(ph,s){
+  const hide=!hid.checked&&(ph===1||ph===2)?' <i>(Hidden in this view, but it is there.)</i>':'';
+  if(ph===0)return mon.B.checked?'Press <b>Fire one</b>. Which-way detectors now sit just behind the slits.':'Press <b>Fire one</b>. A particle and its wavefunction enter the apparatus.';
+  if(ph===1)return 'The particle has a <b>determinate</b> position (shown in vermilion) and rides along with ψ. We don’t know exactly where it is: we only know it is distributed as |ψ|² (epistemic uncertainty).'+hide;
+  if(ph===2&&s!=null)return 'The particle goes through the slit it was always going to go through, and the detector records it ('+slitName(s)+'). ψ does <b>not</b> collapse: it becomes entangled with the detector. In configuration space the two branches no longer overlap, so the particle is guided only by its own branch (its <b>effective wavefunction</b>). The empty branch, shown faint, still exists but no longer affects the motion.'+hide;
+  if(ph===2)return 'The particle goes through <b>exactly one</b> slit; ψ goes through both and interferes. The guidance equation steers the particle by the whole of ψ, so the other slit still shapes its path.'+hide;
+  return s!=null?'The particle lands where its single-slit branch takes it. There are <b>no fringes</b> and no collapse anywhere: the detector only revealed something that was already determinate, namely which slit.':'The particle arrives where its trajectory takes it, fixed from the start by its initial position and ψ (<b>deterministic</b>). ψ does not collapse; the parts of it far from the particle just stop mattering to its motion.';
+}
+let lastKey='';
+function setText(ph,hit){
+  const sC=shot?shot.C.s:null,sG=shot?shot.G.s:null,sB=shot?shot.B.s:null;
+  const k=[ph,hit,sC,sG,sB,hid.checked,grwf.checked,exag.checked,mon.C.checked,mon.G.checked,mon.B.checked].join('|');if(k===lastKey)return;lastKey=k;
+  $('sayC').innerHTML=cText(ph,sC);$('sayG').innerHTML=gText(ph,hit,sG);$('sayB').innerHTML=bText(ph,sB);
+}
+function counts(){
+  for(const s of SIDES){const n=hits[s].length;$('n'+s).textContent=n+' detection'+(n===1?'':'s')}
+  const m=$('match');m.style.display=hits.C.length>=60?'block':'none';
+  const monNames=[['C','standard QM'],['G','GRW'],['B','Bohm']].filter(([s])=>mon[s].checked&&TWO).map(([,n])=>n);
+  let msg;
+  if(monNames.length)msg='With the slits monitored ('+monNames.join(', ')+'), the fringes are gone. In standard QM and GRW that is because ψ is localised onto one slit, by a measurement collapse or by hits in the detector. In Bohmian mechanics nothing collapses: the particle is guided by one branch of an entangled ψ. All three agree on the screen, as they must.';
+  else if(exag.checked)msg='With the hit rate cranked up, GRW’s screen departs from the other two: hits in flight destroy the superposition across the slits, so the fringes wash out. That is a genuine empirical difference, and it is why GRW’s real λ is chosen so small.';
+  else msg='All three screens converge on the same Born-rule pattern. In standard QM that is a postulate about chancy collapse at measurement. In GRW it comes from the stochastic dynamics (the deviations are far too small to see here). In Bohmian mechanics it follows from the guidance equation plus initial positions distributed as |ψ|²: trajectories congregate wherever |ψ|² piles up, and to exactly the same degree.';
+  m.textContent=msg;
+}
+let lastShown=0;
+function frame(now){
+  draw('C',now);const gi=draw('G',now),r=draw('B',now);
+  if(shot){lastShown=r.ph;setText(r.ph,gi.hit);const el=now-shot.t0;
+    if(el>=DUR.a+DUR.p&&!shot.landed){shot.landed=true;hits.C.push({x:shot.C.x,j:Math.random()});hits.G.push({x:shot.G.x,j:Math.random()});hits.B.push({x:shot.B.tr[NSTEP],j:Math.random()});counts()}
+    if(el>DUR.a+DUR.p+DUR.d+600){shot.done=true}
+    if(!shot.done)requestAnimationFrame(frame)}
+  else setText(lastShown,false);
+}
+function busy(){return shot&&!shot.done}
+function redraw(){if(!busy())requestAnimationFrame(frame)}
+function cShot(){const s=mon.C.checked?pickSlit():null;return {s,x:sampleScreen(slitsFor(s))}}
+function fire1(){if(busy())return;shot={t0:performance.now(),C:cShot(),G:grwShot(true),B:bohmShot(sampleX0(),mon.B.checked)};requestAnimationFrame(frame)}
+function fireN(n){if(busy())return;shot=null;lastShown=0;for(let i=0;i<n;i++){hits.C.push({x:cShot().x,j:Math.random()});hits.G.push({x:grwShot(false).x,j:Math.random()});hits.B.push({x:bohmShot(sampleX0(),mon.B.checked).tr[NSTEP],j:Math.random()})}counts();redraw()}
+function clear(sides){for(const s of sides)hits[s]=[];shot=null;lastShown=0;counts();redraw()}
+$('fire1').onclick=fire1;$('fire100').onclick=()=>fireN(100);$('reset').onclick=()=>clear(SIDES);
+$('dsl').oninput=e=>{A=+e.target.value/2;rebuild();clear(SIDES)};
+$('lower').onchange=e=>{TWO=e.target.checked;rebuild();clear(SIDES)};
+exag.onchange=()=>clear(['G']);
+mon.C.onchange=()=>clear(['C']);mon.G.onchange=()=>clear(['G']);
+mon.B.onchange=()=>{buildEnsemble();clear(['B'])};
+for(const el of [ens,hid,bornBox,$('grwm'),grwf])el.onchange=()=>{lastKey='';redraw()};
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target===document.body){e.preventDefault();fire1()}});
+const ro=new ResizeObserver(redraw);for(const s of SIDES)ro.observe(cv[s]);
+new MutationObserver(()=>{buildImgs();redraw()}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+rebuild();counts();redraw();
+}
+</script>
+</body>
+</html>
