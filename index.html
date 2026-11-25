@@ -1,0 +1,30 @@
+---
+layout: default
+---
+<section class="intro">
+  <h1>Interpretations, run side by side</h1>
+  <p>Interactive simulations for {{ site.course }}. Each one runs the same experiment on three benches: standard quantum mechanics with collapse, GRW spontaneous collapse, and Bohmian mechanics. The statistics agree; the stories do not.</p>
+</section>
+
+<ul class="demos">
+  {% for d in site.data.demos %}
+  {% if d.url contains '://' %}{% assign href = d.url %}{% else %}{% assign href = d.url | relative_url %}{% endif %}
+  <li class="demo">
+    <a class="art" href="{{ href }}" tabindex="-1" aria-hidden="true">
+      {% if d.art %}{% capture art_file %}art/{{ d.art }}.svg{% endcapture %}{% include {{ art_file }} %}{% endif %}
+    </a>
+    <div class="body">
+      {% if d.week %}<p class="week">{{ d.week }}</p>{% endif %}
+      <h2><a href="{{ href }}">{{ d.title }}</a></h2>
+      <p>{{ d.blurb }}</p>
+      {% if d.try %}
+      <p class="try-h">Things to try</p>
+      <ul class="try">
+        {% for t in d.try %}<li>{{ t }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      <a class="open" href="{{ href }}">Open the demo <span aria-hidden="true">→</span></a>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
