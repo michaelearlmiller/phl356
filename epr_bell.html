@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<!-- saved from url=(0079)file:///home/michael/Downloads/EPR%E2%80%93Bell_%20Collapse,%20GRW,%20Bohm.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EPR–Bell: Collapse, GRW, Bohm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./epr_bell_files/css2" rel="stylesheet">
+<style>
+/* VOICE: a lecture demonstration — clear, exact, unhurried; built for a projector. Companion to the double-slit page.
+   IDEA: a Bell-test bench seen from above — source, two Stern–Gerlach magnets, four detectors — run three times.
+   PICTURE: three live simulations of one singlet pair; what reaches across the gap differs per theory.
+   COLOUR and TYPE: white ground, ink, violet for ψ, teal for GRW, vermilion for Bohmian particles; Plex Sans + Plex Serif.
+   LAYOUT: title, settings, three wide benches with narration beside, CHSH result, then the ledger. */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#13121a);--panel:light-dark(#f4f3f8,#1c1b25);--ink:light-dark(#17161d,#ecebf3);--mute:light-dark(#5d5a6b,#a4a1b5);--line:light-dark(#dcdae5,#34323f);--psi:light-dark(#4b3fd1,#9d94ff);--bohm:light-dark(#e0401f,#ff7a57);--grw:light-dark(#0f7a6c,#4fd1bd);--hit:light-dark(#17161d,#f2f1fa);--barrier:light-dark(#2a2833,#56536a)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans",system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(22px,3.5vw,44px) max(3vw,16px);max-width:1500px;margin:0 auto}
+h1{font:600 clamp(30px,4vw,46px)/1.05 "IBM Plex Serif",Georgia,serif;margin:0 0 10px;text-wrap:balance}
+.lede{color:var(--mute);max-width:82ch;margin:0}
+.controls{display:flex;flex-wrap:wrap;gap:6px 28px;align-items:center;margin-top:18px}
+.grp{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.gl{font-size:13px;color:var(--mute);font-weight:500}
+button{font:500 15px "IBM Plex Sans",sans-serif;min-height:44px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer}
+button.primary{background:var(--psi);border-color:var(--psi);color:light-dark(#fff,#13121a)}
+button:disabled{opacity:.45;cursor:default}
+button.chip{min-height:36px;padding:0 10px;font-size:14px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--bohm);outline-offset:2px}
+label.tog{display:flex;align-items:center;gap:7px;min-height:44px;font-size:15px;cursor:pointer}
+label.tog input{width:19px;height:19px;accent-color:var(--psi);margin:0}
+.slider{display:flex;align-items:center;gap:8px;font-size:15px}
+.slider input{width:140px;accent-color:var(--psi)}
+.slider output{font-variant-numeric:tabular-nums;width:3.2em;font-weight:600}
+.benches{display:grid;gap:14px;margin-top:16px}
+.bench{background:var(--panel);border-radius:12px;padding:14px;display:grid;grid-template-columns:minmax(0,1.85fr) minmax(0,1fr);gap:16px}
+.bench h2{font:600 21px/1.15 "IBM Plex Serif",serif;margin:0}
+.tags{font-size:13px;color:var(--mute);margin:2px 0 8px}
+.fig{position:relative;aspect-ratio:3.3/1;border-radius:8px;overflow:hidden;background:var(--bg)}
+.fig canvas{position:absolute;inset:0;width:100%;height:100%}
+.say{margin:0;font-size:15px}
+.say b{color:var(--psi)}
+#gG .say b{color:var(--grw)}#gB .say b{color:var(--bohm)}
+.stats{font-size:13.5px;color:var(--mute);margin-top:10px;border-top:1px solid var(--line);padding-top:8px;font-variant-numeric:tabular-nums}
+.stats b{color:var(--ink);font-weight:600}
+.chsh{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;align-items:start}
+.bars{display:grid;gap:12px;margin-top:10px}
+.bar{display:grid;grid-template-columns:9em minmax(0,1fr) 4em;align-items:center;gap:10px;font-size:15px}
+.track{position:relative;height:26px;background:var(--panel);border-radius:5px}
+.fill{position:absolute;inset:0 auto 0 0;border-radius:5px;transition:width .6s}
+.mark{position:absolute;top:-6px;bottom:-6px;width:0;border-left:2px dashed var(--ink)}
+.mark span{position:absolute;top:-20px;left:-1px;font-size:12px;white-space:nowrap;color:var(--mute)}
+.val{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+table{border-collapse:collapse;width:100%;margin-top:8px;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+thead th{font:600 17px "IBM Plex Serif",serif}
+tbody th{font-weight:500;color:var(--mute);width:16%}
+h3{font:600 24px "IBM Plex Serif",serif;margin:0}
+.note{font-size:13.5px;color:var(--mute);max-width:95ch;margin-top:18px}
+em.k{font-style:normal;font-weight:700}
+@media(max-width:1000px){.bench{grid-template-columns:minmax(0,1fr)}.chsh{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.fig{aspect-ratio:2/1}.bar{grid-template-columns:6.5em minmax(0,1fr) 3.4em}table{font-size:13.5px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px}.stack th,.stack td{display:flow-root;border:0;padding:3px 0;width:auto}.stack td{padding-inline-start:5.5em}.stack td::before{content:attr(data-l);float:inline-start;width:5em;margin-inline-start:-5.5em;font-weight:600}}
+</style>
+</head>
+<body>
+<div class="band">
+  <h1>One entangled pair, three stories</h1>
+  <p class="lede">A spin-singlet pair flies apart to Alice and Bob, who each measure spin with a Stern–Gerlach magnet at an angle of their choosing. All three theories predict the same correlation, E(a,b) = −cos(a−b), which violates Bell’s inequality. So all three are nonlocal. Watch what each one says reaches across the gap.</p>
+  <div class="controls">
+    <div class="grp">
+      <button class="primary" id="fire1">Fire one pair</button>
+      <button id="replay">Replay same initial state</button>
+      <button id="fire200">Fire 200</button>
+      <button id="reset">Clear</button>
+    </div>
+    <div class="grp">
+      <div class="slider"><label for="aS">Alice’s angle a</label><input id="aS" type="range" min="0" max="180" step="15" value="0"><output id="aO">90°</output></div>
+      <div class="slider"><label for="bS">Bob’s angle b</label><input id="bS" type="range" min="0" max="180" step="15" value="45"><output id="bO">90°</output></div>
+    </div>
+    <div class="grp">
+      <span class="gl">Measures first</span>
+      <label class="tog"><input type="radio" name="first" id="fA" checked=""> Alice</label>
+      <label class="tog"><input type="radio" name="first" id="fB"> Bob</label>
+    </div>
+    <div class="grp">
+      <span class="gl">GRW</span>
+      <label class="tog"><input type="radio" name="ont" id="grwm" checked=""> GRWm</label>
+      <label class="tog"><input type="radio" name="ont" id="grwf"> GRWf</label>
+      <span class="gl">Bohm</span>
+      <label class="tog"><input type="checkbox" id="hidden" checked=""> Show particles</label>
+    </div>
+  </div>
+  <div class="benches">
+    <section class="bench" id="gC">
+      <div><h2>Standard QM with collapse</h2><div class="tags">indeterministic · indeterminate · measurement primitive</div><div class="fig"><canvas id="cC" width="870" height="264"></canvas></div></div>
+      <div><p class="say" id="sayC">Bob measures along 90°. Given the collapsed state, + has probability 0%. Result: <b>−1</b>. Replay the same state and you can get different results (indeterministic).</p><div class="stats" id="stC">At a = 90°, b = 90°: <b>5</b> runs · ++ 0 · +− 4 · −+ 1 · −− 0<br>E = <b>-1.00</b> (quantum prediction -1.00)<br>Last pair: Alice <b>+1</b>, Bob <b>−1</b></div></div>
+    </section>
+    <section class="bench" id="gG">
+      <div><h2>GRW spontaneous collapse</h2><div class="tags">indeterministic · indeterminate · no measurement primitive</div><div class="fig"><canvas id="cG" width="870" height="264"></canvas></div></div>
+      <div><p class="say" id="sayG">Bob’s detector is hit too: <b>+1</b> (chance 100%). Same statistics as the collapse postulate, but there is no measurement in the laws: one nonlocal stochastic law produces the correlations.</p><div class="stats" id="stG">At a = 90°, b = 90°: <b>5</b> runs · ++ 0 · +− 2 · −+ 3 · −− 0<br>E = <b>-1.00</b> (quantum prediction -1.00)<br>Last pair: Alice <b>−1</b>, Bob <b>+1</b></div></div>
+    </section>
+    <section class="bench" id="gB">
+      <div><h2>Bohmian mechanics</h2><div class="tags">deterministic · determinate positions · no collapse</div><div class="fig"><canvas id="cB" width="870" height="264"></canvas></div></div>
+      <div><p class="say" id="sayB">Bob’s particle is above the line, so it goes up: <b>+1</b>. Everything was fixed by the two initial positions, ψ and both settings (deterministic). <b>Replay</b> after changing Alice’s angle, or who goes first, and Bob’s result can change.</p><div class="stats" id="stB">At a = 90°, b = 90°: <b>5</b> runs · ++ 0 · +− 2 · −+ 3 · −− 0<br>E = <b>-1.00</b> (quantum prediction -1.00)<br>Last pair: Alice <b>−1</b>, Bob <b>+1</b></div></div>
+    </section>
+  </div>
+</div>
+
+<div class="band">
+  <div class="chsh">
+    <div>
+      <h3>The CHSH test</h3>
+      <p>Bell locality implies |S| ≤ 2, where S = E(a,b) − E(a,b′) + E(a′,b) + E(a′,b′). With a = 0°, a′ = 90°, b = 45°, b′ = 135°, quantum mechanics predicts S = 2√2 ≈ 2.83. That is the largest value any quantum theory allows (Tsirelson’s bound), and it is what experiments find.</p>
+      <p>The run fires 1,000 pairs at each of the four setting pairs, on each bench, using the current choice of who measures first.</p>
+      <button class="primary" id="chshBtn">Run CHSH test</button>
+    </div>
+    <div>
+      <div class="bars" id="bars"><div class="bar"><span>Collapse</span><div class="track"><div class="fill" style="width:88.875%;background:var(--psi)"></div><div class="mark" style="left:62.5%"><span>Bell bound 2</span></div><div class="mark" style="left:88.38834764831844%;border-color:var(--mute)"><span>2√2</span></div></div><span class="val">2.84</span></div><div class="bar"><span>GRW</span><div class="track"><div class="fill" style="width:88.06249999999999%;background:var(--grw)"></div><div class="mark" style="left:62.5%"></div><div class="mark" style="left:88.38834764831844%;border-color:var(--mute)"></div></div><span class="val">2.82</span></div><div class="bar"><span>Bohm</span><div class="track"><div class="fill" style="width:90.75%;background:var(--bohm)"></div><div class="mark" style="left:62.5%"></div><div class="mark" style="left:88.38834764831844%;border-color:var(--mute)"></div></div><span class="val">2.90</span></div></div>
+      <p class="note" id="chshNote">Every bench violates the Bell bound by about the same amount (sampling noise is roughly ±0.05). The statistics cannot tell these theories apart. What they disagree about is what makes the violation happen: a global collapse, a global spontaneous hit, or a velocity field that couples the particles across the gap.</p>
+    </div>
+  </div>
+</div>
+
+<div class="band">
+  <h3>What each theory says about one pair</h3>
+  <table class="stack">
+    <thead><tr><th></th><th>Collapse</th><th>GRW</th><th>Bohm</th></tr></thead>
+    <tbody>
+      <tr><th>Ontology</th><td>The entangled state ψ, which is complete</td><td>ψ plus a matter density (GRWm) or flashes (GRWf)</td><td>Two particles with positions, plus ψ on configuration space</td></tr>
+      <tr><th>Spin before measurement</th><td><em class="k">Metaphysically</em> indeterminate: the singlet gives neither particle a spin along any axis</td><td><em class="k">Metaphysically</em> indeterminate, as on the left. Hits act on positions, so nothing settles the spin in flight</td><td>Not a property at all: only positions are determinate. The result is fixed by the positions, ψ and the whole setup (contextual), and our uncertainty about it is <em class="k">epistemic</em></td></tr>
+      <tr><th>What links the outcomes</th><td>Collapse of the whole ψ, instantly, when one side is measured</td><td>A hit in one detector localises the whole entangled ψ, the far side included</td><td>The guidance equation: each particle’s velocity depends on where the other particle is, and so on the other side’s setting</td></tr>
+      <tr><th>Deterministic?</th><td>No</td><td>No</td><td>Yes, given the initial positions</td></tr>
+      <tr><th>Local, in Bell’s sense?</th><td>No</td><td>No</td><td>No</td></tr>
+      <tr><th>Can Alice signal to Bob?</th><td>No: Bob’s own statistics do not depend on Alice’s setting</td><td>No, for the same reason</td><td>No, as long as positions are distributed as |ψ|² (quantum equilibrium). Controlling them more finely would allow signalling</td></tr>
+      <tr><th>Does it matter who measures first?</th><td>For the story, not the statistics. But “first” is frame-dependent, so the collapse needs a preferred frame</td><td>As on the left for the original theory. Tumulka’s relativistic GRWf (for non-interacting particles) manages without a preferred frame</td><td>Yes, for individual outcomes: the same positions can give different results. So the theory needs a preferred foliation, but the statistics are unaffected</td></tr>
+    </tbody>
+  </table>
+  <p class="note">The model: spin-½ singlet, measured along axes at angles a and b in the plane perpendicular to the beam. The first measurement gives ±1 with probability ½. The second then gives +1 with probability (1 − r₁ cos Δ)/2, where r₁ is the first result and Δ the angle between the axes, so E = −cos Δ. Collapse and GRW draw both results by chance. Each run of the Bohmian bench draws one initial position per particle from |ψ|² and holds it fixed. As in the standard treatment of a Stern–Gerlach magnet with a symmetric packet, a particle in the top fraction p of its packet is deflected up, where p is the probability of “up” given the effective wavefunction at that moment. So the first particle goes up if it starts in the upper half; the dividing line for the second particle is set by the first result and both settings. “Replay same initial state” re-runs with the same ψ and, on the Bohmian bench, the same positions, using whatever settings and order are now chosen. GRW’s deviations from these statistics are far too small to show here.</p>
+</div>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+const SIDES=['C','G','B'];
+const cv={C:$('cC'),G:$('cG'),B:$('cB')};
+const hid=$('hidden'),grwf=$('grwf');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const NAME={A:'Alice',B:'Bob'};
+const deg=d=>d*Math.PI/180;
+const sgn=r=>r>0?'+1':'−1';
+function erf(x){const s=Math.sign(x);x=Math.abs(x);const t=1/(1+0.3275911*x);return s*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x))}
+function qnorm(p){let lo=-6,hi=6;for(let i=0;i<60;i++){const m=(lo+hi)/2;if(0.5*(1+erf(m/Math.SQRT2))<p)lo=m;else hi=m}return (lo+hi)/2}
+const probe=document.createElement('i');probe.style.display='none';document.body.appendChild(probe);
+function css(n){probe.style.color='var('+n+')';return getComputedStyle(probe).color}
+const rgba=(c,a)=>c.replace('rgb(','rgba(').replace(')',','+a+')');
+
+const settings=()=>({a:+$('aS').value,b:+$('bS').value,first:$('fA').checked?'A':'B'});
+// one run of the experiment on all three benches; u = Bohmian position quantiles (fixed for a replay)
+function run(st,u){
+  const F=st.first,S=F==='A'?'B':'A',th={A:st.a,B:st.b};
+  const D=Math.cos(deg(th[S]-th[F]));
+  const pS=rF=>(1-rF*D)/2; // P(second = +1 | first = rF)
+  const chance=()=>{const rF=Math.random()<0.5?1:-1,p=pS(rF),rS=Math.random()<p?1:-1;return {r:{[F]:rF,[S]:rS},pS:p}};
+  const rF=u[F]>0.5?1:-1,p=pS(rF),rS=u[S]>1-p?1:-1;
+  return {st,F,S,th,u,C:chance(),G:chance(),B:{r:{[F]:rF,[S]:rS},pS:p}};
+}
+const newU=()=>({A:Math.random(),B:Math.random()});
+
+// ---- statistics ----
+const stats={};
+const skey=st=>st.a+'|'+st.b;
+function tally(R){const k=skey(R.st);stats[k]=stats[k]||{C:[0,0,0,0],G:[0,0,0,0],B:[0,0,0,0]};
+  for(const s of SIDES){const r=R[s].r,i=(r.A>0?0:2)+(r.B>0?0:1);stats[k][s][i]++}}
+function showStats(){
+  const st=settings(),k=skey(st),E0=-Math.cos(deg(st.b-st.a));
+  for(const s of SIDES){
+    const c=stats[k]&&stats[k][s],n=c?c[0]+c[1]+c[2]+c[3]:0;
+    let h='At a = '+st.a+'°, b = '+st.b+'°: ';
+    if(!n)h+='no runs yet. Quantum prediction E = <b>'+E0.toFixed(2)+'</b>.';
+    else{const E=(c[0]-c[1]-c[2]+c[3])/n;h+='<b>'+n+'</b> runs · ++ '+c[0]+' · +− '+c[1]+' · −+ '+c[2]+' · −− '+c[3]+'<br>E = <b>'+E.toFixed(2)+'</b> (quantum prediction '+E0.toFixed(2)+')'}
+    if(cur&&cur.landed){const r=cur[s].r;h+='<br>Last pair: Alice <b>'+sgn(r.A)+'</b>, Bob <b>'+sgn(r.B)+'</b>';
+      if(cur.prev){const q=cur.prev[s].r;h+=' · same initial state before ('+cur.prev.st.a+'°/'+cur.prev.st.b+'°, '+NAME[cur.prev.F]+' first): Alice '+sgn(q.A)+', Bob '+sgn(q.B)}}
+    $('st'+s).innerHTML=h;
+  }
+}
+
+// ---- geometry & timeline ----
+function geom(c,F){
+  const r=c.getBoundingClientRect(),dpr=devicePixelRatio||1;
+  if(c.width!==Math.round(r.width*dpr)||c.height!==Math.round(r.height*dpr)){c.width=Math.round(r.width*dpr);c.height=Math.round(r.height*dpr)}
+  const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  const W=r.width,H=r.height,y0=H*0.56,dy=H*0.33;
+  const xs=(F==='A'?0.33:0.67)*W;
+  const side={A:{dir:-1,xm:0.25*W,xd:0.05*W,mag:[0.17*W,0.25*W]},B:{dir:1,xm:0.75*W,xd:0.95*W,mag:[0.75*W,0.83*W]}};
+  for(const k in side){side[k].L1=Math.abs(xs-side[k].xm);side[k].L2=Math.abs(side[k].xm-side[k].xd)}
+  const v=(0.62*W)/(reduce?400:3600);
+  return {ctx,W,H,y0,dy,xs,side,v,rx:Math.max(9,0.02*W),ry:H*0.11};
+}
+function tl(g,F,S){const tF=(g.side[F].L1+g.side[F].L2)/g.v,tS=(g.side[S].L1+g.side[S].L2)/g.v,tJ=(g.side[F].L1+0.5*g.side[F].L2)/g.v;return {tF,tS,tJ,end:tS+(reduce?100:1300)}}
+function where(g,k,t){const s=g.side[k],d=g.v*t;if(d<s.L1)return {split:false,x:g.xs+s.dir*d,q:0};const q=Math.min(1,(d-s.L1)/s.L2);return {split:true,x:s.xm+(s.xd-s.xm)*q,q}}
+const branchY=(g,q,up)=>g.y0+(up?-1:1)*g.dy*q*q;
+
+function blob(ctx,x,y,rx,ry,c,a){if(a<=0.01)return;ctx.save();ctx.globalAlpha=Math.min(1,a);ctx.translate(x,y);ctx.scale(rx,ry);const gr=ctx.createRadialGradient(0,0,0,0,0,1);gr.addColorStop(0,c);gr.addColorStop(0.45,rgba(c,0.55));gr.addColorStop(1,rgba(c,0));ctx.fillStyle=gr;ctx.beginPath();ctx.arc(0,0,1,0,7);ctx.fill();ctx.restore()}
+function burst(ctx,x,y,r,c){ctx.strokeStyle=c;ctx.lineWidth=2;ctx.beginPath();for(let k=0;k<8;k++){const a=k*Math.PI/4,r0=r*0.3,r1=k%2?r*0.7:r;ctx.moveTo(x+r0*Math.cos(a),y+r0*Math.sin(a));ctx.lineTo(x+r1*Math.cos(a),y+r1*Math.sin(a))}ctx.stroke();ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,3.5,0,7);ctx.fill()}
+function arrow(ctx,x,y,ang,len,c){const dx=Math.sin(ang)*len,dy=-Math.cos(ang)*len;ctx.strokeStyle=c;ctx.fillStyle=c;ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(x-dx/2,y-dy/2);ctx.lineTo(x+dx/2,y+dy/2);ctx.stroke();const hx=x+dx/2,hy=y+dy/2,a=Math.atan2(dy,dx);ctx.beginPath();ctx.moveTo(hx,hy);ctx.lineTo(hx-8*Math.cos(a-0.45),hy-8*Math.sin(a-0.45));ctx.lineTo(hx-8*Math.cos(a+0.45),hy-8*Math.sin(a+0.45));ctx.fill()}
+
+let cur=null;
+function draw(T,now){
+  const R=cur,st=R?R.st:settings(),F=R?R.F:st.first,S=F==='A'?'B':'A';
+  const g=geom(cv[T],F),{ctx,W,H,y0,dy,xs,side,rx,ry}=g;ctx.clearRect(0,0,W,H);
+  const psiC=css('--psi'),bohm=css('--bohm'),grw=css('--grw'),hitC=css('--hit'),line=css('--line'),bar=css('--barrier'),mute=css('--mute'),panel=css('--panel');
+  const col={C:psiC,G:grw,B:bohm}[T],fOnt=T==='G'&&grwf.checked,wA=fOnt?0.22:1;
+  const th={A:st.a,B:st.b};
+  const t=R?now-R.t0:-1,TL=tl(g,F,S);
+  // apparatus
+  ctx.font='12px IBM Plex Sans,sans-serif';
+  for(const k of ['A','B']){const s=side[k];
+    ctx.fillStyle=bar;ctx.fillRect(s.mag[0],y0-ry*1.9,s.mag[1]-s.mag[0],ry*0.9);ctx.fillRect(s.mag[0],y0+ry*1.0,s.mag[1]-s.mag[0],ry*0.9);
+    const cx=(s.mag[0]+s.mag[1])/2,cy=y0-ry*1.9-22;ctx.strokeStyle=mute;ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(cx,cy,13,0,7);ctx.stroke();arrow(ctx,cx,cy,deg(th[k]),22,hitC);
+    ctx.fillStyle=mute;ctx.font='600 13px IBM Plex Sans,sans-serif';ctx.textAlign='center';ctx.fillText(NAME[k]+' · '+(k==='A'?'a':'b')+' = '+th[k]+'°',cx,Math.max(14,cy-20));ctx.textAlign='left';
+    for(const up of [true,false]){const y=y0+(up?-1:1)*dy,fired=R&&t>=(k===F?TL.tF:TL.tS)&&(R[T].r[k]>0)===up;
+      ctx.fillStyle=fired?col:panel;ctx.strokeStyle=fired?col:bar;ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(s.xd-9,y-11,18,22,4);ctx.fill();ctx.stroke();
+      ctx.fillStyle=fired?(T==='B'?'#fff':css('--bg')):mute;ctx.font='700 14px IBM Plex Sans,sans-serif';ctx.textAlign='center';ctx.fillText(up?'+':'−',s.xd,y+5);ctx.textAlign='left'}}
+  ctx.fillStyle=mute;ctx.beginPath();ctx.arc(xs,y0,5,0,7);ctx.fill();ctx.font='12px IBM Plex Sans,sans-serif';ctx.textAlign='center';ctx.fillText('source',xs,y0+ry+20);ctx.textAlign='left';
+  if(!R)return 0;
+  const tN0=T==='B'?TL.tJ:TL.tF,ph=t<tN0?1:t<TL.tS?2:3;
+  const r=R[T].r,pS=R[T].pS,pos={A:where(g,'A',t),B:where(g,'B',t)};
+  const after=k=>t>=(k===F?TL.tF:TL.tS);
+  // entanglement link
+  const linkOn=T==='B'?true:t<TL.tF;
+  if(linkOn&&!pos.A.split&&!pos.B.split||(linkOn&&T==='B'&&t<TL.tS)){const xa=pos.A.split?side.A.xm:pos.A.x,xb=pos.B.split?side.B.xm:pos.B.x;
+    ctx.strokeStyle=col;ctx.globalAlpha=T==='B'&&t>=TL.tJ?0.35:0.6;ctx.setLineDash([3,4]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(xa,y0-ry);ctx.quadraticCurveTo((xa+xb)/2,y0-dy*1.25,xb,y0-ry);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
+    ctx.fillStyle=mute;ctx.font='italic 12px IBM Plex Sans,sans-serif';ctx.textAlign='center';ctx.fillText(T==='B'&&t>=TL.tJ?'ψ still entangled':'entangled ψ',(xa+xb)/2,y0-dy*0.68);ctx.textAlign='left'}
+  // packets
+  for(const k of ['A','B']){const P=pos[k],isF=k===F,wUp=isF?0.5:pS,win=r[k]>0;
+    if(!P.split){blob(ctx,P.x,y0,rx,ry,psiC,wA);
+      if(T!=='B'&&!isF&&t>=TL.tF){arrow(ctx,P.x,y0,deg(th[F])+(r[F]>0?Math.PI:0),ry*1.5,hitC);ctx.fillStyle=mute;ctx.font='12px IBM Plex Sans,sans-serif';ctx.textAlign='center';ctx.fillText('now '+(r[F]>0?'down':'up')+' along '+th[F]+'°',P.x,y0+ry+16);ctx.textAlign='left'}}
+    else{const done=after(k);
+      for(const up of [true,false]){const w=up?wUp:1-wUp,isWin=up===win;let a=(0.35+0.65*w)*wA;
+        if(done)a=isWin?wA*Math.max(0.3,1-(t-(isF?TL.tF:TL.tS))/900):(T==='B'?0.16:0);
+        blob(ctx,P.x,branchY(g,P.q,up),rx,ry*0.8,psiC,a);
+        if(T==='B'&&done&&!isWin&&P.q>0.9){ctx.fillStyle=mute;ctx.font='italic 12px IBM Plex Sans,sans-serif';ctx.textAlign=k==='A'?'left':'right';ctx.fillText('empty branch',P.x+(k==='A'?16:-16),branchY(g,P.q,up)+4);ctx.textAlign='left'}}}}
+  // Bohm: thresholds and particles
+  if(T==='B'){
+    const off=(k,u)=>Math.max(-ry*0.9,Math.min(ry*0.9,-ry*0.42*qnorm(u)));
+    for(const k of ['A','B']){const P=pos[k],isF=k===F;
+      if(!P.split){let yl=null,lab='';
+        if(isF){yl=y0;lab='+ above, − below'}
+        else if(t>=TL.tJ){const p=pS,yNew=y0-ry*0.42*qnorm(1-p),f=Math.min(1,(t-TL.tJ)/350);yl=y0+(yNew-y0)*f;lab=t<TL.tJ+1600?'line moved by '+NAME[F]:'+ above, − below'}
+        if(yl!==null){ctx.strokeStyle=hitC;ctx.lineWidth=1.5;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(P.x-rx*1.6,yl);ctx.lineTo(P.x+rx*1.6,yl);ctx.stroke();ctx.setLineDash([]);
+          ctx.fillStyle=hitC;ctx.font='600 12px IBM Plex Sans,sans-serif';ctx.textAlign='center';ctx.fillText(lab,P.x,y0+ry+16);ctx.textAlign='left'}}
+      if(hid.checked||after(k)){const o=off(k,R.u[k]);let px,py;
+        if(!P.split){px=P.x;py=y0+o}else{const up=r[k]>0;px=P.x;py=branchY(g,P.q,up)+o*0.8*(1-P.q)}
+        ctx.fillStyle=bohm;ctx.beginPath();ctx.arc(px,py,5,0,7);ctx.fill()}}}
+  // the nonlocal step
+  const tN=T==='B'?TL.tJ:TL.tF;
+  if(t>=tN&&t<tN+1500){const a=1-(t-tN)/1500,P=pos[S],xS=P.split?side[S].xm:P.x,xF=side[F].xd,yF=y0+(r[F]>0?-dy:dy);
+    ctx.strokeStyle=col;ctx.globalAlpha=a;ctx.lineWidth=2;ctx.setLineDash([8,6]);ctx.beginPath();ctx.moveTo(xF,yF);ctx.lineTo(xS,y0);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=col;ctx.font='600 13px IBM Plex Sans,sans-serif';ctx.textAlign='center';
+    const lab=T==='C'?'ψ collapses everywhere at once':T==='G'?'a hit here localises ψ there too':'Bob’s guidance changes at once'.replace('Bob',NAME[S]);
+    ctx.fillText(lab,W/2,18);ctx.textAlign='left';ctx.globalAlpha=1}
+  // detection marks
+  for(const k of ['A','B'])if(after(k)){const tk=k===F?TL.tF:TL.tS,y=y0+(r[k]>0?-dy:dy),x=side[k].xd,e=t-tk;
+    if(T==='G'&&grwf.checked)burst(ctx,x,y,e<600?10+14*(1-e/600):10,grw);
+    else if(e<700){ctx.strokeStyle=col;ctx.globalAlpha=1-e/700;ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,14+16*e/700,0,7);ctx.stroke();ctx.globalAlpha=1}
+    ctx.fillStyle=col;ctx.font='700 15px IBM Plex Sans,sans-serif';ctx.textAlign=k==='A'?'left':'right';ctx.fillText(sgn(r[k]),x+(k==='A'?16:-16),y+5);ctx.textAlign='left'}
+  return ph;
+}
+
+// ---- narration ----
+function txt(T,ph){
+  const R=cur;if(!R||ph===0){
+    return {C:'Press <b>Fire one pair</b>. A pair in the spin singlet leaves the source.',G:'Press <b>Fire one pair</b>. The same singlet ψ, governed by GRW’s single stochastic law.',B:'Press <b>Fire one pair</b>. Two particles leave the source, guided by one entangled ψ.'}[T]}
+  const F=NAME[R.F],S=NAME[R.S],r=R[T].r,thF=R.th[R.F],thS=R.th[R.S],p=Math.round(R[T].pS*100),f=grwf.checked;
+  const opp=r[R.F]>0?'down':'up';
+  if(T==='C'){
+    if(ph===1)return 'The pair is in the singlet: an entangled ψ that gives <b>neither</b> particle a spin of its own. There is no fact about either spin along any axis (metaphysical indeterminacy), and nothing yet fixes how the measurements will come out.';
+    if(ph===2)return F+'’s detector fires: <b>'+sgn(r[R.F])+'</b>, by pure chance (50/50). The measurement collapses the <b>whole</b> ψ at once, including the part at '+S+'’s side. '+S+'’s particle now has spin '+opp+' along '+thF+'°. Nothing travelled: the change is instantaneous, which needs a frame in which “at once” makes sense.';
+    return S+' measures along '+thS+'°. Given the collapsed state, + has probability '+p+'%. Result: <b>'+sgn(r[R.S])+'</b>. Replay the same state and you can get different results (indeterministic).';
+  }
+  if(T==='G'){
+    if(ph===1)return 'Same singlet ψ. GRW hits act on <b>positions</b>, not spin, and a lone particle is almost never hit, so the spin superposition simply persists in flight (metaphysical indeterminacy).'+(f?' On GRWf there is no matter in flight at all.':' On GRWm the matter density is spread over both packets.');
+    if(ph===2)return 'In '+F+'’s magnet the spin becomes correlated with the particle’s position, and then with ~10²³ detector particles. One of them is <b>hit</b> almost at once: <b>'+sgn(r[R.F])+'</b>. The hit localises the whole entangled ψ, so '+S+'’s distant particle is now spin '+opp+' along '+thF+'°.'+(f?' The hit is a <b>flash</b> at '+F+'’s detector. At '+S+'’s side there is still no flash, only changed chances for where the next one will be.':' The matter density on both sides changes at once.');
+    return S+'’s detector is hit too: <b>'+sgn(r[R.S])+'</b> (chance '+p+'%). Same statistics as the collapse postulate, but there is no measurement in the laws: one nonlocal stochastic law produces the correlations.';
+  }
+  const uF=R.u[R.F];
+  if(ph===1)return 'Each particle has a <b>determinate</b> position inside its packet (dots), but neither has a spin value: spin is not a property in Bohmian mechanics. We don’t know the positions, only that they are distributed as |ψ|² (epistemic uncertainty). '+F+'’s magnet will send the upper half of the packet up.';
+  if(ph===2)return F+'’s particle started in the '+(uF>0.5?'upper':'lower')+' half of its packet, so it is deflected '+(uF>0.5?'up':'down')+': <b>'+sgn(r[R.F])+'</b>. ψ is entangled, so the velocity of '+S+'’s particle depends on where '+F+'’s is. The dashed line in '+S+'’s packet, which divides positions that will go + from those that will go −, has <b>jumped</b> (nonlocal). Nothing collapsed.';
+  return S+'’s particle is '+(r[R.S]>0?'above':'below')+' the line, so it goes '+(r[R.S]>0?'up':'down')+': <b>'+sgn(r[R.S])+'</b>. Everything was fixed by the two initial positions, ψ and both settings (deterministic). <b>Replay</b> after changing '+F+'’s angle, or who goes first, and '+S+'’s result can change.';
+}
+let lastKey='';
+function setText(phs){const k=[phs.C,phs.G,phs.B,cur&&cur.t0,grwf.checked,hid.checked].join('|');if(k===lastKey)return;lastKey=k;for(const T of SIDES)$('say'+T).innerHTML=txt(T,phs[T])}
+
+function frame(now){
+  const phs={};for(const T of SIDES)phs[T]=draw(T,now)||0;
+  if(cur){const g=geom(cv.B,cur.F),TL=tl(g,cur.F,cur.S),t=now-cur.t0;
+    if(t>=TL.tS&&!cur.landed){cur.landed=true;tally(cur);showStats()}
+    setText(phs);
+    if(t<TL.end)requestAnimationFrame(frame);else cur.done=true}
+  else setText({C:0,G:0,B:0});
+}
+const busy=()=>cur&&!cur.done;
+function redraw(){if(!busy())requestAnimationFrame(frame)}
+function launch(u,prev){if(busy())return;cur=run(settings(),u);cur.t0=performance.now();cur.prev=prev||null;$('replay').disabled=false;requestAnimationFrame(frame)}
+$('fire1').onclick=()=>launch(newU(),null);
+$('replay').onclick=()=>{if(cur&&!busy())launch(cur.u,cur)};
+$('fire200').onclick=()=>{if(busy())return;const st=settings();for(let i=0;i<200;i++)tally(run(st,newU()));showStats()};
+$('reset').onclick=()=>{if(busy())return;for(const k in stats)delete stats[k];cur=null;$('replay').disabled=true;lastKey='';showStats();redraw()};
+for(const [s,o] of [['aS','aO'],['bS','bO']])$(s).oninput=()=>{$(o).textContent=$(s).value+'°';showStats();redraw()};
+for(const id of ['fA','fB','grwm','grwf','hidden'])$(id).onchange=()=>{lastKey='';redraw()};
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target===document.body){e.preventDefault();launch(newU(),null)}});
+
+// ---- CHSH ----
+const NM={C:'Collapse',G:'GRW',B:'Bohm'};
+function bars(Sv){
+  const max=3.2,cols={C:'var(--psi)',G:'var(--grw)',B:'var(--bohm)'};
+  $('bars').innerHTML=SIDES.map(T=>'<div class="bar"><span>'+NM[T]+'</span><div class="track"><div class="fill" style="width:'+(Sv?Math.min(100,Math.abs(Sv[T])/max*100):0)+'%;background:'+cols[T]+'"></div>'+
+    '<div class="mark" style="left:'+(2/max*100)+'%">'+(T==='C'?'<span>Bell bound 2</span>':'')+'</div><div class="mark" style="left:'+(2*Math.SQRT2/max*100)+'%;border-color:var(--mute)">'+(T==='C'?'<span>2√2</span>':'')+'</div></div><span class="val">'+(Sv?Math.abs(Sv[T]).toFixed(2):'—')+'</span></div>').join('');
+}
+$('chshBtn').onclick=()=>{
+  const first=settings().first,N=1000,E={C:{},G:{},B:{}};
+  for(const [a,b] of [[0,45],[0,135],[90,45],[90,135]]){const st={a,b,first},acc={C:0,G:0,B:0};
+    for(let i=0;i<N;i++){const R=run(st,newU());for(const T of SIDES)acc[T]+=R[T].r.A*R[T].r.B}
+    for(const T of SIDES)E[T][a+'|'+b]=acc[T]/N}
+  const Sv={};for(const T of SIDES){const e=E[T];Sv[T]=e['0|45']-e['0|135']+e['90|45']+e['90|135']}
+  bars(Sv);
+  $('chshNote').textContent='Every bench violates the Bell bound by about the same amount (sampling noise is roughly ±0.05). The statistics cannot tell these theories apart. What they disagree about is what makes the violation happen: a global collapse, a global spontaneous hit, or a velocity field that couples the particles across the gap.';
+};
+bars(null);
+
+const ro=new ResizeObserver(redraw);for(const T of SIDES)ro.observe(cv[T]);
+showStats();redraw();
+}
+</script><i style="display: none; color: var(--panel);"></i>
+
+
+</body></html>
